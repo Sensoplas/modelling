@@ -4,6 +4,7 @@ from joblib import dump
 
 import os
 import numpy as np
+import random
 
 class UVCharacteristics:
     date: str = None
@@ -54,10 +55,10 @@ def buildTrainingSet(location):
     return (bigData, labels)
 
 def forceUniformity(data):
-    maxDataSize = min(map(len,data))
+    maxDataSize = 3200 #Hardcoded
     for i in range(len(data)):
         if len(data[i]) > maxDataSize:
-            data[i] = data[i][:maxDataSize]
+            data[i] = [random.choice(data[i]) for j in range(maxDataSize)]
     return (data, maxDataSize)
 
 def printData(UVIntensity, labels):
@@ -84,6 +85,7 @@ regr, maxSize = execute_model()
 if __name__ == "__main__":
     regr, maxSize = execute_model()
     # Save the model to disk
+    print(maxSize)
     dump(regr, 'UVIndexModel.joblib')
     # set the Local ENV MODELSIZE to the maxmodel Size
     open('MAXMODELSIZE', 'w').write(str(maxSize))
